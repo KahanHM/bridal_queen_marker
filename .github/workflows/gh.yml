@@ -33,8 +33,6 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      - name: Export static site
-        run: npx next export
 
       - name: Add CNAME (backup safety)
         run: echo "app.kahan.site" > ./out/CNAME
@@ -44,10 +42,14 @@ jobs:
         with:
           path: ./out
 
+  
   deploy:
-    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}   # ← was missing
     runs-on: ubuntu-latest
 
+    needs: build
     steps:
       - name: Deploy
         id: deployment
